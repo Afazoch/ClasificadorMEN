@@ -39,7 +39,7 @@ import streamlit as st
 # ─────────────────────────────────────────────────────────────
 RUTA_MODELO = Path(__file__).parent / "modelo_final.pkl"
 
-MIN_PALABRAS = 3
+MIN_PALABRAS = 2
 ETIQUETA_REVISION = "Asunto insuficiente – revisión manual"
 
 GENERICOS = {
@@ -203,15 +203,16 @@ def top3_dependencias(asunto: str, modelo: dict) -> list:
 # INTERFAZ
 # ─────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Clasificador de Dependencias MEN",
+    page_title="Clasificador de Dependencias",
     page_icon="🏛️",
     layout="centered",
 )
 
 st.title("Clasificador de Dependencias MEN")
 st.caption(
-    "Ministerio de Educación Nacional de Colombia · "
-    "Proyecto de especialización — Gabriela Contreras Cañas y Andrés Felipe Zárate Chaparro"
+    "Implementación de un modelo de Procesamiento de Lenguaje Natural (NLP) para la clasificación de peticiones ciudadanas basado en el
+"Decreto 2269 de 2023""
+    "Proyecto Aplicado II — Gabriela Contreras Cañas y Andrés Felipe Zárate Chaparro"
 )
 
 st.write(
@@ -243,15 +244,14 @@ with tab1:
 
     st.write("**Ejemplos rápidos:**")
     cols = st.columns(len(ejemplos))
-    asunto_ejemplo = None
     for i, ej in enumerate(ejemplos):
         with cols[i]:
             if st.button(f"Ejemplo {i+1}", help=ej, use_container_width=True):
-                asunto_ejemplo = ej
+                st.session_state["asunto_texto"] = ej
 
     asunto = st.text_area(
         "Asunto de la comunicación",
-        value=asunto_ejemplo if asunto_ejemplo else "",
+        key="asunto_texto",
         height=100,
         placeholder="Ej: Solicitud de convalidación de título universitario obtenido en el exterior",
     )
