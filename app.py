@@ -203,15 +203,18 @@ def top3_dependencias(asunto: str, modelo: dict) -> list:
 # INTERFAZ
 # ─────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Clasificador de Dependencias",
+    page_title="Clasificador de Dependencias MEN",
     page_icon="🏛️",
     layout="centered",
 )
 
-st.title("Clasificador de Dependencias MEN")
+st.title("Clasificador de Dependencias")
 st.caption(
-    "Implementación de un modelo de Procesamiento de Lenguaje Natural (NLP) para la clasificación de peticiones ciudadanas basado en el Decreto 2269 de 2023"
-    "Proyecto Aplicado II — Gabriela Contreras Cañas y Andrés Felipe Zárate Chaparro"
+    "ESEIT: Escuela Superior de Empresa, Ingeniería y Tecnología \n"
+    "Proyecto Aplicado II \n"
+    "Implementación de un modelo de Procesamiento de Lenguaje Natural (NLP) "
+    "para la clasificación de peticiones ciudadanas basado en el Decreto 2269 de 2023  \n"
+    "Gabriela Contreras Cañas y Andrés Felipe Zárate Chaparro"
 )
 
 st.write(
@@ -237,8 +240,8 @@ with tab1:
         "Solicitud de convalidación de título universitario obtenido en el exterior",
         "Recurso de reposición contra sanción disciplinaria",
         "Reclamo sobre alimentación escolar PAE en colegio público",
-        "Permiso remunerado por motivos personales para empleado del MEN",
-        "Tutela por vulneración al derecho a la educación",
+        "Permiso NO remunerado por motivos personales para empleado del MEN",
+        "Notificación auto admite acción de tutela contra el MEN",
     ]
 
     st.write("**Ejemplos rápidos:**")
