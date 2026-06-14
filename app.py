@@ -210,8 +210,7 @@ st.set_page_config(
 
 st.title("Clasificador de Dependencias MEN")
 st.caption(
-    "Implementación de un modelo de Procesamiento de Lenguaje Natural (NLP) para la clasificación de peticiones ciudadanas basado en el
-"Decreto 2269 de 2023""
+    "Implementación de un modelo de Procesamiento de Lenguaje Natural (NLP) para la clasificación de peticiones ciudadanas basado en el Decreto 2269 de 2023"
     "Proyecto Aplicado II — Gabriela Contreras Cañas y Andrés Felipe Zárate Chaparro"
 )
 
