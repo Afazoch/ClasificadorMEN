@@ -2,27 +2,13 @@
 app.py
 ======
 Clasificador de Dependencias MEN — Aplicación web (Streamlit)
-Ministerio de Educación Nacional de Colombia
+ESEIT: Escuela Superior de Empresa, Ingeniería y Tecnología
 Autores: Gabriela Contreras Cañas | Andrés Felipe Zárate Chaparro
 
 DESCRIPCIÓN:
   Interfaz web que permite a cualquier persona, sin instalar nada,
   escribir el Asunto de una comunicación ciudadana y recibir las
   3 dependencias más probables del MEN con su porcentaje de confianza.
-
-  Incluye la regla de coherencia por nivel educativo (Educación Superior
-  vs Preescolar/Básica/Media) para evitar asignaciones incoherentes.
-
-DESPLIEGUE EN STREAMLIT CLOUD:
-  1. Sube este archivo, 'modelo_final.pkl' y 'requirements.txt' a un
-     repositorio de GitHub.
-  2. En share.streamlit.io, conecta el repositorio y selecciona 'app.py'
-     como archivo principal.
-  3. Streamlit Cloud instalará automáticamente lo indicado en requirements.txt.
-
-EJECUCIÓN LOCAL (opcional, para pruebas):
-  pip install streamlit scikit-learn pandas openpyxl
-  streamlit run app.py
 """
 
 import re
@@ -210,8 +196,8 @@ st.set_page_config(
 
 st.title("Clasificador de Dependencias")
 st.caption(
-    "ESEIT: Escuela Superior de Empresa, Ingeniería y Tecnología \n"
-    "Proyecto Aplicado II \n"
+    "ESEIT: Escuela Superior de Empresa, Ingeniería y Tecnología · "
+    "Proyecto Aplicado II  \n"
     "Implementación de un modelo de Procesamiento de Lenguaje Natural (NLP) "
     "para la clasificación de peticiones ciudadanas basado en el Decreto 2269 de 2023  \n"
     "Gabriela Contreras Cañas y Andrés Felipe Zárate Chaparro"
@@ -238,9 +224,9 @@ tab1, tab2 = st.tabs(["Consulta individual", "Procesamiento por lotes (Excel)"])
 with tab1:
     ejemplos = [
         "Solicitud de convalidación de título universitario obtenido en el exterior",
-        "Solicitud de inspección y vigilancia a institución de educación superior por irregularidades académicas",
+        "Solicitud de revisión a institución de educación superior por acoso académico",
         "Reclamo sobre alimentación escolar PAE en colegio público",
-        "Permiso NO remunerado por motivos personales para empleado del MEN",
+        "Permiso remunerado por motivos personales para empleado del MEN",
         "Notificación auto admite acción de tutela contra el MEN",
     ]
 
@@ -302,6 +288,27 @@ with tab2:
     st.write(
         "Sube un archivo Excel con una columna llamada **Asunto** "
         "(los datos pueden empezar en la fila 2 o más adelante)."
+    )
+
+    # Plantilla descargable
+    from io import BytesIO as _BytesIO
+    _plantilla = pd.DataFrame({
+        "Asunto": [
+            "Solicitud de convalidación de título universitario obtenido en el exterior",
+            "Reclamo sobre alimentación escolar PAE en colegio público",
+            "Permiso remunerado por motivos personales para empleado del MEN",
+        ]
+    })
+    _buf_plantilla = _BytesIO()
+    with pd.ExcelWriter(_buf_plantilla, engine='openpyxl') as _writer:
+        _plantilla.to_excel(_writer, index=False, sheet_name="Asuntos")
+    _buf_plantilla.seek(0)
+
+    st.download_button(
+        label="Descargar plantilla de ejemplo (Excel)",
+        data=_buf_plantilla,
+        file_name="plantilla_asuntos.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
 
     archivo = st.file_uploader("Archivo Excel (.xlsx)", type=["xlsx"])
@@ -388,7 +395,21 @@ with tab2:
 st.divider()
 st.caption(
     "Modelo: TF-IDF + SGDClassifier, entrenado con ~403.000 comunicaciones "
-    "(sep 2025 – jun 2026) filtradas por Etapa = Aceptar. "
-    "Incluye regla de coherencia por nivel educativo (Educación Superior "
-    "vs Preescolar/Básica/Media)."
+    "(sep 2025 – jun 2026) filtradas por Etapa = Aceptar. \n "
+    "De las 37 dependencias normalizadas, 12 tienen F1 ≥ 0.60 (buen desempeño), "
+    "10 están entre 0.40-0.60 (mejorable), y 15 quedan por debajo de 0.40 "
+    "(críticas, generalmente por tener pocas muestras de entrenamiento). \n"
+    "El Accuracy de 85.3% es la cifra más representativa para presentar de "
+    "forma general, ya que refleja el desempeño global ponderado por volumen "
+    "real de comunicaciones. \n"
+)
+st.caption(
+    "Esta herramienta corresponde a un ejercicio académico desarrollado en el "
+    "marco de un proyecto de especialización y se basa en la estructura "
+    "orgánica establecida en el Decreto 2269 de 2023. No constituye un acto "
+    "administrativo, ni reemplaza ni representa el procedimiento oficial de "
+    "recepción, trámite y asignación de comunicaciones ciudadanas vigente "
+    "en el MEN.  \n"
+    "Autores responsables del ejercicio: Gabriela Contreras Cañas y "
+    "Andrés Felipe Zárate Chaparro."
 )
