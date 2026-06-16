@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triángulo organizacional MEN — Distribución de comunicaciones</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 1.5rem;
+    background: #ffffff;
+    color: #1a1a1a;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+  h2.sr-only {
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0,0,0,0);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: #F1EFE8;
+    border-radius: 8px;
+    padding: 0.75rem;
+    text-align: center;
+  }
+  .stat-label { font-size: 12px; color: #5F5E5A; margin-bottom: 4px; }
+  .stat-value { font-size: 20px; font-weight: 500; }
+  .stat-pct { font-size: 11px; color: #5F5E5A; }
+  .legend {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 12px;
+    color: #5F5E5A;
+  }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .footer-note {
+    margin-top: 1.5rem;
+    font-size: 12px;
+    color: #888780;
+    border-top: 0.5px solid #D3D1C7;
+    padding-top: 0.75rem;
+  }
+  @media (max-width: 480px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h2 class="sr-only">Triángulo organizacional del MEN: distribución de comunicaciones por dependencia</h2>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Despacho del Ministro</div>
+      <div class="stat-value" style="color:#3C3489;">254.697</div>
+      <div class="stat-pct">63.1%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Secretaría General</div>
+      <div class="stat-value" style="color:#0F6E56;">62.158</div>
+      <div class="stat-pct">15.4%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Vice Ed. Superior</div>
+      <div class="stat-value" style="color:#993C1D;">55.781</div>
+      <div class="stat-pct">13.8%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Vice Preescolar, B y M</div>
+      <div class="stat-value" style="color:#185FA5;">29.659</div>
+      <div class="stat-pct">7.3%</div>
+    </div>
+  </div>
+
+  <div id="triContainer" style="width: 100%; position: relative;">
+    <canvas id="triCanvas" role="img" aria-label="Triángulo organizacional del MEN mostrando la distribución de comunicaciones por dependencia"></canvas>
+  </div>
+
+  <div class="legend">
+    <span class="legend-item"><span class="legend-dot" style="background:#534AB7;"></span>Despacho del Ministro</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#1D9E75;"></span>Secretaría General</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#D85A30;"></span>Vice Ed. Superior</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#378ADD;"></span>Vice Preescolar, B y M</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#D3D1C7; border-radius:2px;"></span>El área del círculo = volumen de comunicaciones</span>
+  </div>
+
+  <div class="footer-note">
+    Proyecto de especialización ESEIT — Gabriela Contreras Cañas y Andrés Felipe Zárate Chaparro.
+    Ejercicio académico basado en la estructura orgánica del Decreto 2269 de 2023. No representa el
+    ejercicio de funciones del MEN.
+  </div>
+
+</div>
+
+<script>
+const deps = [
+  { label: 'Oficina Asesora Jurídica',               x: 50,  y: 15,  n: 241177, color: '#534AB7' },
+  { label: 'Subdirección Rel. Ciudadanía',            x: 50,  y: 85,  n: 44361,  color: '#1D9E75' },
+  { label: 'Subdirección Aseg. Ed. Superior',         x: 87,  y: 85,  n: 27883,  color: '#D85A30' },
+  { label: 'Subdirección Insp. y Vigilancia',         x: 80,  y: 78,  n: 17956,  color: '#D85A30' },
+  { label: 'Subdirección RR.HH. Sector Ed.',          x: 13,  y: 78,  n: 12473,  color: '#378ADD' },
+  { label: 'Subdirección Talento Humano',             x: 57,  y: 88,  n: 7288,   color: '#1D9E75' },
+  { label: 'Despacho del Ministro',                   x: 44,  y: 10,  n: 6950,   color: '#534AB7' },
+  { label: 'Subdirección Apoyo IES',                  x: 86,  y: 70,  n: 6508,   color: '#D85A30' },
+  { label: 'Secretaría General',                      x: 50,  y: 92,  n: 6309,   color: '#1D9E75' },
+  { label: 'Despacho Vice PBM',                       x: 13,  y: 88,  n: 4150,   color: '#378ADD' },
+  { label: 'Subdirección Fomento Comp.',              x: 16,  y: 55,  n: 2761,   color: '#378ADD' },
+  { label: 'Subdirección Ref. y Eval.',               x: 16,  y: 62,  n: 2710,   color: '#378ADD' },
+  { label: 'Subdirección Acceso',                     x: 20,  y: 70,  n: 2346,   color: '#378ADD' },
+  { label: 'Subdirección Gestión Financiera',         x: 43,  y: 88,  n: 2343,   color: '#1D9E75' },
+  { label: 'Oficina Infraestructura',                 x: 36,  y: 18,  n: 2202,   color: '#534AB7' },
+  { label: 'Oficina Planeación y Finanzas',           x: 58,  y: 15,  n: 1812,   color: '#534AB7' },
+  { label: 'Subdirección Monitoreo y Control',        x: 18,  y: 65,  n: 1599,   color: '#378ADD' },
+  { label: 'Oficina TI',                              x: 42,  y: 12,  n: 1547,   color: '#534AB7' },
+  { label: 'Subdirección Contratación',               x: 63,  y: 88,  n: 1471,   color: '#1D9E75' },
+  { label: 'Despacho Vice Ed. Superior',              x: 88,  y: 88,  n: 1301,   color: '#D85A30' },
+  { label: 'Dir. Calidad Ed. Superior',                x: 82,  y: 60,  n: 883,    color: '#D85A30' },
+  { label: 'Subdirección Permanencia',                x: 22,  y: 75,  n: 869,    color: '#378ADD' },
+  { label: 'Dir. Primera Infancia',                   x: 10,  y: 68,  n: 760,    color: '#378ADD' },
+  { label: 'Dir. Fomento Ed. Superior',                x: 78,  y: 50,  n: 692,    color: '#D85A30' },
+  { label: 'Dir. Fortalecimiento Territ.',            x: 28,  y: 60,  n: 683,    color: '#378ADD' },
+  { label: 'Subdirección Fort. Institucional',        x: 30,  y: 53,  n: 630,    color: '#378ADD' },
+  { label: 'Subdirección Desarrollo Sectorial',       x: 84,  y: 43,  n: 558,    color: '#D85A30' },
+  { label: 'Oficina Innovación Educativa',            x: 64,  y: 18,  n: 550,    color: '#534AB7' },
+  { label: 'Dir. Cobertura y Equidad',                x: 25,  y: 80,  n: 510,    color: '#378ADD' },
+  { label: 'Subdirección Gestión Admin.',             x: 56,  y: 92,  n: 319,    color: '#1D9E75' },
+  { label: 'Oficina Cooperación Intern.',             x: 34,  y: 13,  n: 208,    color: '#534AB7' },
+  { label: 'Oficina Control Disciplinario',           x: 65,  y: 13,  n: 207,    color: '#534AB7' },
+  { label: 'Subdirección Calidad PI',                 x: 10,  y: 75,  n: 127,    color: '#378ADD' },
+  { label: 'Subdirección Desarrollo Org.',            x: 70,  y: 88,  n: 67,     color: '#1D9E75' },
+  { label: 'Subdirección Cobertura PI',               x: 8,   y: 82,  n: 41,     color: '#378ADD' },
+  { label: 'Oficina Comunicaciones',                  x: 28,  y: 13,  n: 37,     color: '#534AB7' },
+  { label: 'Oficina Control Interno',                 x: 72,  y: 13,  n: 7,      color: '#534AB7' },
+  { label: 'Dir. Calidad Preescolar B y M',           x: 24,  y: 43,  n: 1605,   color: '#378ADD' },
+];
+
+const canvas = document.getElementById('triCanvas');
+const container = document.getElementById('triContainer');
+
+function setupCanvas() {
+  const W = container.offsetWidth || 660;
+  const H = Math.round(W * 0.82);
+  canvas.width = W;
+  canvas.height = H;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  drawAll();
+}
+
+function toCanvas(xPct, yPct, pad, iW, iH) {
+  return [pad.left + (xPct / 100) * iW, pad.top + (yPct / 100) * iH];
+}
+
+let activeHover = null;
+
+function drawAll() {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const pad = { top: 60, right: 40, bottom: 60, left: 40 };
+  const iW = W - pad.left - pad.right;
+  const iH = H - pad.top - pad.bottom;
+
+  const vertices = {
+    Ministro: toCanvas(50, 2, pad, iW, iH),
+    ViceES:   toCanvas(96, 96, pad, iW, iH),
+    VicePBM:  toCanvas(4,  96, pad, iW, iH),
+    SecGen:   toCanvas(50, 96, pad, iW, iH),
+  };
+
+  ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([6, 4]);
+  ctx.beginPath();
+  ctx.moveTo(...vertices.Ministro);
+  ctx.lineTo(...vertices.ViceES);
+  ctx.lineTo(...vertices.VicePBM);
+  ctx.closePath();
+  ctx.stroke();
+
+  ctx.setLineDash([3, 4]);
+  ctx.beginPath();
+  ctx.moveTo(...vertices.Ministro);
+  ctx.lineTo(...vertices.SecGen);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  const vertexLabels = [
+    { pos: vertices.Ministro, label: 'Despacho del Ministro',  color: '#534AB7', dy: -14 },
+    { pos: vertices.ViceES,   label: 'Vice Ed. Superior',       color: '#D85A30', dy: 18  },
+    { pos: vertices.VicePBM,  label: 'Vice Preescolar, B y M',  color: '#378ADD', dy: 18  },
+    { pos: vertices.SecGen,   label: 'Secretaría General',      color: '#1D9E75', dy: 18  },
+  ];
+
+  vertexLabels.forEach(({ pos, label, color, dy }) => {
+    ctx.beginPath();
+    ctx.arc(pos[0], pos[1], 7, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.font = '500 12px sans-serif';
+    ctx.fillStyle = color;
+    ctx.textAlign = 'center';
+    ctx.fillText(label, pos[0], pos[1] + dy);
+  });
+
+  const maxN = Math.max(...deps.map(d => d.n));
+  const minR = 3, maxR = 38;
+
+  deps.forEach(d => {
+    const [cx, cy] = toCanvas(d.x, d.y, pad, iW, iH);
+    const r = minR + (Math.sqrt(d.n / maxN)) * (maxR - minR);
+    const isHover = activeHover === d;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fillStyle = d.color + (isHover ? 'FF' : 'CC');
+    ctx.fill();
+    ctx.strokeStyle = d.color;
+    ctx.lineWidth = isHover ? 2 : 1;
+    ctx.stroke();
+  });
+
+  if (activeHover) {
+    const d = activeHover;
+    const [cx, cy] = toCanvas(d.x, d.y, pad, iW, iH);
+    const r = minR + (Math.sqrt(d.n / maxN)) * (maxR - minR);
+    let tx = cx + r + 10;
+    let ty = cy;
+    const tw = 210, th = 52;
+    if (tx + tw > W - 10) tx = cx - r - tw - 10;
+    if (ty + th > H - 10) ty = H - th - 10;
+    ctx.fillStyle = 'rgba(255,255,255,0.98)';
+    ctx.strokeStyle = d.color;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(tx, ty, tw, th, 6);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = d.color;
+    ctx.font = '500 11px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(d.label, tx + 8, ty + 17);
+    ctx.fillStyle = '#1a1a1a';
+    ctx.font = '400 11px sans-serif';
+    ctx.fillText(d.n.toLocaleString('es-CO') + ' comunicaciones', tx + 8, ty + 34);
+  }
+}
+
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  const pad = { top: 60, right: 40, bottom: 60, left: 40 };
+  const iW = canvas.width - pad.left - pad.right;
+  const iH = canvas.height - pad.top - pad.bottom;
+  const maxN = Math.max(...deps.map(d => d.n));
+  const minR = 3, maxR = 38;
+
+  let found = null;
+  deps.forEach(d => {
+    const [cx, cy] = toCanvas(d.x, d.y, pad, iW, iH);
+    const r = minR + (Math.sqrt(d.n / maxN)) * (maxR - minR);
+    const dist = Math.sqrt((mx - cx) ** 2 + (my - cy) ** 2);
+    if (dist <= r + 2) found = d;
+  });
+
+  if (found !== activeHover) {
+    activeHover = found;
+    canvas.style.cursor = found ? 'pointer' : 'default';
+    drawAll();
+  }
+});
+
+canvas.addEventListener('mouseleave', () => {
+  activeHover = null;
+  canvas.style.cursor = 'default';
+  drawAll();
+});
+
+setupCanvas();
+window.addEventListener('resize', setupCanvas);
+</script>
+
+</body>
+</html>
