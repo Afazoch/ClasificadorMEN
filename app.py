@@ -200,7 +200,6 @@ st.caption(
     "Proyecto Aplicado II  \n"
     "Implementación de un modelo de Procesamiento de Lenguaje Natural (NLP) "
     "para la clasificación de peticiones ciudadanas basado en el Decreto 2269 de 2023  \n"
-    "Gabriela Contreras Cañas y Andrés Felipe Zárate Chaparro"
 )
 
 st.write(
@@ -349,11 +348,11 @@ with tab2:
 
                         top1_pct = candidatos[0][1]
                         if top1_pct >= 50:
-                            estado.append('OK')
+                            estado.append('Confianza Alta')
                         elif top1_pct >= 30:
-                            estado.append('Incierto')
+                            estado.append('Confianza Media')
                         else:
-                            estado.append('Baja confianza')
+                            estado.append('Confianza Baja')
 
                     if len(asuntos) > 0:
                         progreso.progress((idx + 1) / len(asuntos))
@@ -387,7 +386,7 @@ with tab2:
                 st.download_button(
                     label="Descargar resultados (Excel)",
                     data=buffer,
-                    file_name="comunicaciones_clasificadas.xlsx",
+                    file_name="Comunicaciones_clasificadas.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 )
 
@@ -410,6 +409,4 @@ st.caption(
     "administrativo, ni reemplaza ni representa el procedimiento oficial de "
     "recepción, trámite y asignación de comunicaciones ciudadanas vigente "
     "en el MEN.  \n"
-    "Autores responsables del ejercicio: Gabriela Contreras Cañas y "
-    "Andrés Felipe Zárate Chaparro."
 )
