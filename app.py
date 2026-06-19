@@ -223,7 +223,7 @@ tab1, tab2 = st.tabs(["Consulta individual", "Procesamiento por lotes (Excel)"])
 with tab1:
     ejemplos = [
         "Solicitud de convalidación de título universitario obtenido en el exterior",
-        "Solicitud de revisión a institución de educación superior por acoso académico",
+        "Solicitud de revisión a institución de educación superior por acoso",
         "Reclamo sobre alimentación escolar PAE en colegio público",
         "Permiso remunerado por motivos personales para empleado del MEN",
         "Notificación auto admite acción de tutela contra el MEN",
